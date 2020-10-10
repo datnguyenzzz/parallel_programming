@@ -1,0 +1,7 @@
+D:\My_Code\parallel_programming\lab2\src\main\java\ru\bmstu\airport\AirportMapper.java
+D:\My_Code\parallel_programming\lab2\src\main\java\ru\bmstu\airport\AirportWritableComparable.java
+D:\My_Code\parallel_programming\lab2\src\main\java\ru\bmstu\airport\AirportApp.java
+D:\My_Code\parallel_programming\lab2\src\main\java\ru\bmstu\airport\AirportReducer.java
+D:\My_Code\parallel_programming\lab2\src\main\java\ru\bmstu\airport\AirportPartitioner.java
+D:\My_Code\parallel_programming\lab2\src\main\java\ru\bmstu\airport\FlightMapper.java
+D:\My_Code\parallel_programming\lab2\src\main\java\ru\bmstu\airport\AirportGroupingComparator.java

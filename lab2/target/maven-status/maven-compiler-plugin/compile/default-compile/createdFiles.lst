@@ -1,0 +1,7 @@
+ru\bmstu\airport\FlightMapper.class
+ru\bmstu\airport\AirportApp.class
+ru\bmstu\airport\AirportPartitioner.class
+ru\bmstu\airport\AirportMapper.class
+ru\bmstu\airport\AirportReducer.class
+ru\bmstu\airport\AirportGroupingComparator.class
+ru\bmstu\airport\AirportWritableComparable.class
