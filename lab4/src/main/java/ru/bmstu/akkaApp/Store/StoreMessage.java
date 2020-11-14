@@ -11,7 +11,7 @@ public class StoreMessage {
     private int packageID;
     private ArrayList<Test> tests;
 
-    private final String PACKAGE_ID = "packageID";
+    private final String PACKAGE_ID = "packageId";
     private final String TESTS = "tests";
 
     @JsonCreator

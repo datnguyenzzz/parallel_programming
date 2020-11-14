@@ -51,7 +51,7 @@ public class WebServer {
 
     private Route createRoute() {
         return route(
-              get(() -> parameter("packageID", (packageID) -> {
+              get(() -> parameter("packageId", (packageID) -> {
                             CompletionStage<Object> result = PatternsCS.ask(storeActor, new GetMessage(Integer.parseInt(packageID)), 5000);
                             return completeOKWithFuture(result, Jackson.marshaller());
                         })

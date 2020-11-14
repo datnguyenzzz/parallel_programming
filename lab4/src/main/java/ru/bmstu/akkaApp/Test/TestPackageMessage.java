@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 
 public class TestPackageMessage {
-    private final String PACKAGE_ID = "packageID";
+    private final String PACKAGE_ID = "packageId";
     private final String JSSCRIPT = "jsScript";
     private final String FUNCTION_NAME = "functionName";
     private final String TESTS = "tests";
