@@ -51,16 +51,17 @@ public class App {
 
     private Route createRoute() {
         return route(
-              get(() ->
-                        parameter("packageID", (packageID) -> {
+              get(() -> parameter("packageID", (packageID) -> {
                             CompletionStage<Object> result = PatternsCS.add(storeActor, new GetMessage(Integer.parseInt(packageID)), 5000);
                             return completeOKWithFuture(result, Jackson.marshaller());
                         })
               ),
-              post(
-
+              post(() -> entity(Jackson.unmarshaller(TestPackageMessage.class), msg -> {
+                                  TestPackageMessage.tell(msg, ActorRef.noSender());
+                                  return complete("Test started");
+                         })
               )
-        )
+        );
     }
 
     public static void main( String[] args ) {
