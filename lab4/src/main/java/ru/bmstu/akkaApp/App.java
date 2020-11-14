@@ -38,7 +38,7 @@ public class App {
 
     private final String STORE_ACTOR = "storeActor";
     private final String TEST_PACKAGE_ACTOR = "testPackageActor";
-    private final String TEST_PERFORMER_ROUTER = "testPerformerRouter";
+    private final String TEST_ACTOR = "testPerformerRouter";
 
     private static final String domain = 'localhost';
     private static final int port = 8080;
@@ -46,7 +46,7 @@ public class App {
     private WebServer(final ActorSystem system) {
         storeActor = system.actorOf(Props.create(StoreActor.class), STORE_ACTOR);
         testPackageActor = system.actorOf(Props.create(TestPackageActor.class), TEST_PACKAGE_ACTOR);
-        testPerformerRouter = system.actorOf(new RoundRobinPool(5).props(Props.create(TestActor.class)), TEST_PERFORMER_ROUTER);
+        testActor = system.actorOf(new RoundRobinPool(5).props(Props.create(TestActor.class)), TEST_ACTOR);
     }
 
     private Route createRoute() {
