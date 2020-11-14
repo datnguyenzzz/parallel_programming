@@ -32,7 +32,7 @@ import java.util.concurrent.CompletionStage;
  * Hello world!
  *
  */
-public class App {
+public class WebServer {
 
     private ActorRef storeActor, testPackageActor, testPerformerRouter;
 
@@ -40,7 +40,7 @@ public class App {
     private final String TEST_PACKAGE_ACTOR = "testPackageActor";
     private final String TEST_ACTOR = "testActor";
 
-    private static final String domain = 'localhost';
+    private static final String domain = "localhost";
     private static final int port = 8080;
 
     private WebServer(final ActorSystem system) {
