@@ -1,6 +1,6 @@
 package ru.bmstu.akkaApp.Test;
 
-import bmstu.lab5.Store.Message;
+import ru.bmstu.akkaApp.Store.Message;
 
 import akka.actor.AbstractActor;
 import akka.actor.ActorSelection;
