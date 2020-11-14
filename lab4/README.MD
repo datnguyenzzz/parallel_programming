@@ -15,6 +15,6 @@ Result:
 
 ![alt text](https://github.com/datnguyen79198/parallel_programming/blob/main/lab4/cache/github2.PNG?raw=true)
 
-3) After received request from POST, server will response by routing to > packageId = {id}
+3) After received request from POST, server will response by routing to 'packageId = {id}'
 
 ![alt text](https://github.com/datnguyen79198/parallel_programming/blob/main/lab4/cache/github3.PNG?raw=true)
