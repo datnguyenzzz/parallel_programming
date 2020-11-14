@@ -14,7 +14,7 @@ import akka.http.javadsl.server.Route;
 
 import static akka.http.javadsl.server.Directives.*;
 
-import ru.bmstu.akkaApp.Store.Message;
+import ru.bmstu.akkaApp.Store.GetMessage;
 import ru.bmstu.akkaApp.Store.StoreActor;
 import ru.bmstu.akkaApp.Test.TestActor;
 import ru.bmstu.akkaApp.Test.TestPackageActor;
@@ -34,7 +34,7 @@ import java.util.concurrent.CompletionStage;
  */
 public class WebServer {
 
-    private ActorRef storeActor, testPackageActor, testPerformerRouter;
+    private ActorRef storeActor, testPackageActor, testActor;
 
     private final String STORE_ACTOR = "storeActor";
     private final String TEST_PACKAGE_ACTOR = "testPackageActor";
@@ -52,19 +52,19 @@ public class WebServer {
     private Route createRoute() {
         return route(
               get(() -> parameter("packageID", (packageID) -> {
-                            CompletionStage<Object> result = PatternsCS.add(storeActor, new GetMessage(Integer.parseInt(packageID)), 5000);
+                            CompletionStage<Object> result = PatternsCS.ask(storeActor, new GetMessage(Integer.parseInt(packageID)), 5000);
                             return completeOKWithFuture(result, Jackson.marshaller());
                         })
               ),
               post(() -> entity(Jackson.unmarshaller(TestPackageMessage.class), msg -> {
-                                  TestPackageMessage.tell(msg, ActorRef.noSender());
+                                  testPackageActor.tell(msg, ActorRef.noSender());
                                   return complete("Test started");
                          })
               )
         );
     }
 
-    public static void main( String[] args ) {
+    public static void main( String[] args ) throws IOException {
         ActorSystem system = ActorSystem.create("routes");
 
         final Http http = Http.get(system);

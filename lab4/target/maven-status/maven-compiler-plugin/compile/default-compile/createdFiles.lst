@@ -1,0 +1,9 @@
+ru\bmstu\akkaApp\Test\Test.class
+ru\bmstu\akkaApp\Store\StoreMessage.class
+ru\bmstu\akkaApp\Test\TestActor.class
+ru\bmstu\akkaApp\WebServer.class
+ru\bmstu\akkaApp\Store\StoreActor.class
+ru\bmstu\akkaApp\Test\TestPackageMessage.class
+ru\bmstu\akkaApp\Store\GetMessage.class
+ru\bmstu\akkaApp\Test\TestPackageActor.class
+ru\bmstu\akkaApp\Test\TestMessage.class
