@@ -78,7 +78,7 @@ public class WebServer {
             routeFlow,
             ConnectHttp.toHost(domain,port),
             materializer
-        )
+        );
 
         System.out.println("Server is started at http://localhost:8080");
 
@@ -88,6 +88,6 @@ public class WebServer {
               .thenCompose(ServerBinding::unbind)
               .thenAccept(unbound -> system.terminate());
 
-        System.out.println("Server off")
+        System.out.println("Server off");
     }
 }
