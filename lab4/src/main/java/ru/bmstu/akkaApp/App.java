@@ -38,7 +38,7 @@ public class App {
 
     private final String STORE_ACTOR = "storeActor";
     private final String TEST_PACKAGE_ACTOR = "testPackageActor";
-    private final String TEST_ACTOR = "testPerformerRouter";
+    private final String TEST_ACTOR = "testActor";
 
     private static final String domain = 'localhost';
     private static final int port = 8080;
