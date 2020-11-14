@@ -34,20 +34,19 @@ import java.util.concurrent.CompletionStage;
  */
 public class App {
 
-    private ActorRef storeActor;
+    private ActorRef storeActor, testPackageActor, testPerformerRouter;
+
     private final String STORE_ACTOR = "storeActor";
-
-    private ActorRef testPackageActor;
     private final String TEST_PACKAGE_ACTOR = "testPackageActor";
-
-    private ActorRef testPerformerRouter;
     private final String TEST_PERFORMER_ROUTER = "testPerformerRouter";
 
     private static final String domain = 'localhost';
     private static final int port = 8080;
 
     private WebServer(final ActorSystem system) {
-
+        storeActor = system.actorOf(Props.create(StoreActor.class), STORE_ACTOR);
+        testPackageActor = system.actorOf(Props.create(TestPackageActor.class), TEST_PACKAGE_ACTOR);
+        testPerformerRouter = system.actorOf(new RoundRobinPool(5).props(Props.create(TestActor.class)), TEST_PERFORMER_ROUTER);
     }
 
     private Route createRoute() {
