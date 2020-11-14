@@ -32,10 +32,27 @@ import java.util.concurrent.CompletionStage;
  * Hello world!
  *
  */
-public class WebServer {
+public class App {
+
+    private ActorRef storeActor;
+    private final String STORE_ACTOR = "storeActor";
+
+    private ActorRef testPackageActor;
+    private final String TEST_PACKAGE_ACTOR = "testPackageActor";
+
+    private ActorRef testPerformerRouter;
+    private final String TEST_PERFORMER_ROUTER = "testPerformerRouter";
 
     private static final String domain = 'localhost';
     private static final int port = 8080;
+
+    private WebServer(final ActorSystem system) {
+
+    }
+
+    private Route createRoute() {
+
+    }
 
     public static void main( String[] args ) {
         ActorSystem system = ActorSystem.create("routes");
