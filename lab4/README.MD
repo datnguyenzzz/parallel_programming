@@ -10,3 +10,7 @@
 Result:
     
 ![alt text](https://github.com/datnguyen79198/parallel_programming/blob/main/lab4/cache/github1.PNG?raw=true)
+
+2) Testing REST api with server are currently running. I'm using extension to do it. First send POST request, and server will return message like this. 
+
+![alt text](https://github.com/datnguyen79198/parallel_programming/blob/main/lab4/cache/github2.PNG?raw=true)
