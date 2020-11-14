@@ -14,6 +14,12 @@ import akka.http.javadsl.server.Route;
 
 import static akka.http.javadsl.server.Directives.*;
 
+import ru.bmstu.akkaApp.Store.GetMessage;
+import ru.bmstu.akkaApp.Store.StoreActor;
+import ru.bmstu.akkaApp.Test.TestActor;
+import ru.bmstu.akkaApp.Test.TestPackageActor;
+import ru.bmstu.akkaApp.Test.TestPackageMessage;
+
 import akka.pattern.PatternsCS;
 import akka.routing.RoundRobinPool;
 import akka.stream.ActorMaterializer;
