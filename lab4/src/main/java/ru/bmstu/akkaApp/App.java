@@ -50,7 +50,17 @@ public class App {
     }
 
     private Route createRoute() {
+        return route(
+              get(() ->
+                        parameter("packageID", (packageID) -> {
+                            CompletionStage<Object> result = PatternsCS.add(storeActor, new GetMessage(Integer.parseInt(packageID)), 5000);
+                            return completeOKWithFuture(result, Jackson.marshaller());
+                        })
+              ),
+              post(
 
+              )
+        )
     }
 
     public static void main( String[] args ) {
