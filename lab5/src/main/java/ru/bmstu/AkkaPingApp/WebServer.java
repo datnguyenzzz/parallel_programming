@@ -38,6 +38,8 @@ public class WebServer {
 
     private ActorRef storeActor;
 
+    private final String URL_PARAM = "testUrl";
+    private final String COUNT_PARAM = "count";
     private final String STORE_ACTOR = "storeActor";
     private static final String domain = "localhost";
     private static final int port = 8080;
@@ -47,29 +49,41 @@ public class WebServer {
         storeActor = system.actorOf(Props.create(StoreActor.class),STORE_ACTOR);
     }
 
+    Flow<HttpRequest, HttpResponse, NotUsed> getHttpFlow(ActorMaterializer materializer) {
+        return Flow
+                  .of(HttpRequest.class)
+                  .map((request) -> {
+                      Query reqQuery = request.getUri().query();
+                      String testUrl = reqQuery.getOrElse(URL_PARAM, "");
+                      int pingTimes = Integer.parseInt(reqQuery.getOrElse(COUNT_PARAM, "-1"));
+
+                      return new PingRequest(testUrl, pingTimes);
+                  })
+    }
+
     public static void main( String[] args ) {
-      ActorSystem system = ActorSystem.create("routes");
+        ActorSystem system = ActorSystem.create("routes");
 
-      final Http http = Http.get(system);
-      final ActorMaterializer materializer = ActorMaterializer.create(system);
+        final Http http = Http.get(system);
+        final ActorMaterializer materializer = ActorMaterializer.create(system);
 
-      WebServer server = new WebServer(system);
-      final Flow<HttpRequest, HttpResponse, NotUsed> httpFlow = getHttpFlow(materializer);
+        WebServer server = new WebServer(system);
+        final Flow<HttpRequest, HttpResponse, NotUsed> httpFlow = getHttpFlow(materializer);
 
-      final CompletionStage<ServerBinding> binding = http.bindAndHandle (
-          httpFlow,
-          ConnectHttp.toHost(domain, port),
-          materializer
-      );
+        final CompletionStage<ServerBinding> binding = http.bindAndHandle (
+            httpFlow,
+            ConnectHttp.toHost(domain, port),
+            materializer
+        );
 
-      System.out.println("Server is started at http://localhost:8080");
+        System.out.println("Server is started at http://localhost:8080");
 
-      System.in.read();
+        System.in.read();
 
-      binding
+        binding
             .thenCompose(ServerBinding::unbind)
             .thenAccept(unbound -> system.terminate());
 
-      System.out.println("Server off");
+        System.out.println("Server off");
     }
 }
