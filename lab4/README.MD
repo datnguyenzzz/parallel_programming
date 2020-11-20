@@ -9,12 +9,12 @@
 
 Result:
 
-![alt text](https://github.com/datnguyen79198/parallel_programming/blob/main/REST%20api%20akka%20(lab4)/cache/github1.PNG)
+![alt text](https://github.com/datnguyen79198/parallel_programming/blob/main/lab4/cache/github1.PNG)
 
 2) Testing REST api with server are currently running. I'm using extension to do it. First send POST request, and server will return message like this.
 
-![alt text](https://github.com/datnguyen79198/parallel_programming/blob/main/REST%20api%20akka%20(lab4)/cache/github2.PNG)
+![alt text](https://github.com/datnguyen79198/parallel_programming/blob/main/lab4/cache/github2.PNG)
 
 3) After received request from POST, server will response by routing to `packageId = {id}`
 
-![alt text](https://github.com/datnguyen79198/parallel_programming/blob/main/REST%20api%20akka%20(lab4)/cache/github3.PNG)
+![alt text](https://github.com/datnguyen79198/parallel_programming/blob/main/lab4/cache/github3.PNG)
