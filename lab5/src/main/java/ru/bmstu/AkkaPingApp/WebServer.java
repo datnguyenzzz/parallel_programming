@@ -30,13 +30,10 @@ import org.asynchttpclient.Dsl; //init client
  *
  */
 
-class PingServer {
-
-    private PingServer(final ActorSystem system) {
-        storeActor = system.actorOf(Props.create(StoreActor.class));
-    }
-
+private WebServer(final ActorSystem system) {
+    storeActor = system.actorOf(Props.create(StoreActor.class));
 }
+
 
 public class WebServer {
 
@@ -49,8 +46,8 @@ public class WebServer {
       final Http http = Http.get(system);
       final ActorMaterializer materializer = ActorMaterializer.create(system);
 
-      PingServer server = new PingServer(system);
-      final Flow<HttpRequest, HttpResponse, NotUsed> httpFlow = pingServer.getHttpFlow(materializer);
+      WebServer server = new WebServer(system);
+      final Flow<HttpRequest, HttpResponse, NotUsed> httpFlow = getHttpFlow(materializer);
 
       final CompletionStage<ServerBinding> binding = http.bindAndHandle (
           httpFlow,
