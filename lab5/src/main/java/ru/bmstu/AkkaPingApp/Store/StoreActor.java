@@ -16,12 +16,12 @@ public class StoreActor extends AbstractActor{
     @Override
     public Receive createReceive() {
         return ReceiveBuilder.create()
-                .match(StoreActor.class, msg -> { //new store
+                .match(PingRequest.class, msg -> { //new store
                       Long result = store.getOrDefault(msg.getTestUrl(),-1L);
                       sender().tell(new PingResult(msg.getTestUrl(), result), self());
                 })
                 .match(PingResult.class, req -> {
-                      store.put(req.getTestUrl(), req.getAverageResponseTime())
+                      store.put(req.getTestUrl(), req.getAverageResponseTime());
                 })
                 .build();
     }
