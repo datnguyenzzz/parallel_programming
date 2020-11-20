@@ -25,20 +25,27 @@ import java.util.concurrent.CompletionStage;
 import org.asynchttpclient.AsyncHttpClient; //REST api
 import org.asynchttpclient.Dsl; //init client
 
+import ru.bmstu.AkkaPingApp.Store.StoreActor;
+
 /**
  * http://localhost:8080/?testUrl=http://rambler.ru&count=20
  *
  */
 
-private WebServer(final ActorSystem system) {
-    storeActor = system.actorOf(Props.create(StoreActor.class));
-}
-
-
 public class WebServer {
 
+    //--------Constant-------------------
+
+    private ActorRef storeActor;
+
+    private final String STORE_ACTOR = "storeActor";
     private static final String domain = "localhost";
     private static final int port = 8080;
+    //-----------------------------------
+
+    private WebServer(final ActorSystem system) {
+        storeActor = system.actorOf(Props.create(StoreActor.class),STORE_ACTOR);
+    }
 
     public static void main( String[] args ) {
       ActorSystem system = ActorSystem.create("routes");
@@ -64,6 +71,5 @@ public class WebServer {
             .thenAccept(unbound -> system.terminate());
 
       System.out.println("Server off");
-
     }
 }
