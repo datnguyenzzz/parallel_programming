@@ -65,11 +65,21 @@ public class WebServer {
                             .thenCompose((result) -> {
                                 PingResult ansRequest = (PingResult) result;
 
-                                return ansRequest.getAverageResponseTime() == -1
+                                return (ansRequest.getAverageResponseTime() == -1)
                                 ? pingExecute(pingRequest, materializer)
                                 : CompletableFuture.completedFuture(ansRequest);
                             })
                   )
+                  .map((result) -> {
+                      //result - PingResult
+                      storeActor.tell(result, ActorRef.noSender());
+
+                      return HttpResponse.create()
+                                         .withStatus(StatusCodes.OK)
+                                         .withEntity(HttpEntities.create(
+                                              result.getTestUrl() + " " + result.getAverageResponseTime()
+                                         ))
+                  });
     }
 
     public static void main( String[] args ) {
