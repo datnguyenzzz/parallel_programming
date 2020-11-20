@@ -39,6 +39,7 @@ public class WebServer {
     //--------Constant-------------------
 
     private ActorRef storeActor;
+    private AsyncHttpClient httpClient = Dsl.asyncHttpClient();
 
     private final String URL_PARAM = "testUrl";
     private final String COUNT_PARAM = "count";
@@ -53,16 +54,15 @@ public class WebServer {
     }
 
     private Flow<HttpRequest, HttpResponse, NotUsed> getHttpFlow(ActorMaterializer materializer) {
-        return Flow
-                  .of(HttpRequest.class)
-                  .map((request) -> {
+        return Flow.of(HttpRequest.class)
+                   .map((request) -> {
                       Query reqQuery = request.getUri().query();
                       String testUrl = reqQuery.getOrElse(URL_PARAM, "");
                       int pingTimes = Integer.parseInt(reqQuery.getOrElse(COUNT_PARAM, "-1"));
 
                       return new PingRequest(testUrl, pingTimes);
-                  })
-                  .mapAsync(PARALLELISM, (pingRequest) -> PatternsCS.ask(storeActor, pingRequest, 5000)
+                   })
+                   .mapAsync(PARALLELISM, (pingRequest) -> PatternsCS.ask(storeActor, pingRequest, 5000)
                             .thenCompose((result) -> {
                                 PingResult ansRequest = (PingResult) result;
 
@@ -70,7 +70,7 @@ public class WebServer {
                                 ? pingSource(pingRequest, materializer) //not ping to url yet, so ping it
                                 : CompletableFuture.completedFuture(ansRequest);
                             })
-                  )
+                   )
                   .map((result) -> {
                       //result - PingResult
                       storeActor.tell(result, ActorRef.noSender());
@@ -92,6 +92,21 @@ public class WebServer {
                           pingRequest.getTestUrl(),
                           sumTime / pingRequest.getCount() / NANO_TO_MS_FACTOR
                      ));
+    }
+
+    private Sink<PingRequest, CompletionStage<Long>> pingSink() {
+        //turn source value to client return
+        return Flow.<PingRequest>create()
+                   .mapConcat((pingRequest) -> Collections.nCopies(pingRequest.getCount(),pingRequest.getTestUrl()))
+                   .mapAsync(PARALLELISM, (url) -> {
+                      long startTime = System.nanoTime();
+
+                      return httpClient.prepareGet(url)
+                                       .execute()
+                                       .toCompletableFuture()
+                                       .thenApply((response) -> System.nanoTime - startTime);
+                   })
+                   .toMat(Sink.fold(0L, Long::sum), Keep.right());
     }
 
     public static void main( String[] args ) {
