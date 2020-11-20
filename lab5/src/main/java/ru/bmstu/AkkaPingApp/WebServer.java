@@ -45,13 +45,14 @@ public class WebServer {
     private final String STORE_ACTOR = "storeActor";
     private static final String domain = "localhost";
     private static final int port = 8080;
+    private static final long NANO_TO_MS_FACTOR = 1_000_000L;
     //-----------------------------------
 
     private WebServer(final ActorSystem system) {
         storeActor = system.actorOf(Props.create(StoreActor.class),STORE_ACTOR);
     }
 
-    Flow<HttpRequest, HttpResponse, NotUsed> getHttpFlow(ActorMaterializer materializer) {
+    private Flow<HttpRequest, HttpResponse, NotUsed> getHttpFlow(ActorMaterializer materializer) {
         return Flow
                   .of(HttpRequest.class)
                   .map((request) -> {
@@ -66,7 +67,7 @@ public class WebServer {
                                 PingResult ansRequest = (PingResult) result;
 
                                 return (ansRequest.getAverageResponseTime() == -1)
-                                ? pingExecute(pingRequest, materializer)
+                                ? pingSource(pingRequest, materializer) //not ping to url yet, so ping it
                                 : CompletableFuture.completedFuture(ansRequest);
                             })
                   )
@@ -80,6 +81,17 @@ public class WebServer {
                                               result.getTestUrl() + " " + result.getAverageResponseTime()
                                          ))
                   });
+    }
+
+    private CompletionStage<PingResult> pingSource(PingRequest pingRequest, ActorMaterializer materializer) {
+        //It's Source
+        return Source.from(Collections.singletonList(pingRequest))
+                     .toMat(pingSink(), Keep.right())
+                     .run(materializer)
+                     .thenApply((sumTime) -> new PingResult(
+                          pingRequest.getTestUrl(),
+                          sumTime / pingRequest.getCount() / NANO_TO_MS_FACTOR
+                     ));
     }
 
     public static void main( String[] args ) {
