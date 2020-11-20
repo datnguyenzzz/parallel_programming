@@ -26,6 +26,8 @@ import org.asynchttpclient.AsyncHttpClient; //REST api
 import org.asynchttpclient.Dsl; //init client
 
 import ru.bmstu.AkkaPingApp.Store.StoreActor;
+import ru.bmstu.AkkaPingApp.Ping.PingRequest;
+import ru.bmstu.AkkaPingApp.Ping.PingResult;
 
 /**
  * http://localhost:8080/?testUrl=http://rambler.ru&count=20
@@ -59,6 +61,15 @@ public class WebServer {
 
                       return new PingRequest(testUrl, pingTimes);
                   })
+                  .mapAsync(PARALLELISM, (pingRequest) -> PatternsCS.ask(storeActor, pingRequest, 5000)
+                            .thenCompose((result) -> {
+                                PingResult ansRequest = (PingResult) result;
+
+                                return ansRequest.getAverageResponseTime() == -1
+                                ? pingExecute(pingRequest, materializer)
+                                : CompletableFuture.completedFuture(ansRequest);
+                            })
+                  )
     }
 
     public static void main( String[] args ) {
