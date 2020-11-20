@@ -84,7 +84,7 @@ public class WebServer {
     }
 
     private CompletionStage<PingResult> pingSource(PingRequest pingRequest, ActorMaterializer materializer) {
-        //It's Source
+        //It's Source. ping to url. Collections[stime1/count, stime2/count,...]
         return Source.from(Collections.singletonList(pingRequest))
                      .toMat(pingSink(), Keep.right())
                      .run(materializer)
@@ -95,7 +95,7 @@ public class WebServer {
     }
 
     private Sink<PingRequest, CompletionStage<Long>> pingSink() {
-        //turn source value to client return
+        //turn source value to client return. Sum all time in Collections ----> create httpClient get
         return Flow.<PingRequest>create()
                    .mapConcat((pingRequest) -> Collections.nCopies(pingRequest.getCount(),pingRequest.getTestUrl()))
                    .mapAsync(PARALLELISM, (url) -> {
