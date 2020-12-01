@@ -23,6 +23,8 @@ import akka.stream.javadsl.Keep;
 import akka.stream.javadsl.Sink;
 import akka.stream.javadsl.Source;
 
+import ru.bmstu.anonymizer.Store.StoreActor;
+
 import import org.apache.zookeeper.*;
 
 /**
@@ -30,11 +32,25 @@ import import org.apache.zookeeper.*;
  *
  */
 public class WebServer {
+
+    private static ActorRef storeActor;
+
+    private static final String STORE_ACTOR = "storeActor";
+
     private static final String URL_PARAM = "url";
     private static final String COUNT_PARAM = "count";
     private static final String domain = "localhost";
     private static final int port = 8080;
     private static final Duration TIMEOUT = Duration.ofMillis(3000);
+
+    private WebServer(final ActorSystem system) {
+        storeActor = system.actorOf(Props.create(StoreActor.class), STORE_ACTOR);
+        initZooKeeper();
+    }
+
+    private static void initZooKeeper() throws IOException, KeeperException, InterruptedException {
+
+    }
 
     public static void main( String[] args ) {
         System.out.println( "Start create server");
