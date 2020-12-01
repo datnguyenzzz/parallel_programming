@@ -1,5 +1,6 @@
 ru\bmstu\anonymizer\ZookeeperService.class
 ru\bmstu\anonymizer\Messages\GetRandomServerMessage.class
 ru\bmstu\anonymizer\Store\StoreActor.class
+ru\bmstu\anonymizer\SystemServer.class
 ru\bmstu\anonymizer\WebServer.class
 ru\bmstu\anonymizer\Messages\SetServerList.class

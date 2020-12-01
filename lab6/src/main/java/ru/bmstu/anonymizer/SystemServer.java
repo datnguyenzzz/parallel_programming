@@ -11,8 +11,9 @@ import akka.http.javadsl.model.Uri;
 import akka.http.javadsl.server.AllDirectives;
 import akka.http.javadsl.server.Route;
 import akka.japi.Pair;
-import akka.pattern.Patterns;
-import org.apache.zookeeper.KeeperException;
+import akka.pattern.PatternsCS;
+import org.apache.zookeeper.*;
+import akka.stream.ActorMaterializer;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -27,18 +28,17 @@ public class SystemServer extends AllDirectives {
 
     private static ActorRef storeActor;
     private Http http;
-
-    private static final String STORE_ACTOR = "storeActor";
+    private ActorMaterializer materializer;
 
     private static final String URL_PARAM = "url";
     private static final String COUNT_PARAM = "count";
     private static final String domain = "localhost";
     private static final int port = 8080;
-    private static final Duration TIMEOUT = Duration.ofMillis(3000);
 
-    public SystemServer(final ActorSystem system, final Http http) {
-        this.storeActor = system.actorOf(Props.create(StoreActor.class), STORE_ACTOR);
+    public SystemServer(ActorRef storeActor,Http http, ActorMaterializer materializer) throws InterruptedException, IOException, KeeperException {
+        this.storeActor = storeActor;
         this.http = http;
+        this.materializer = materializer;
         initZooKeeper();
     }
 
@@ -64,12 +64,13 @@ public class SystemServer extends AllDirectives {
     }
 
     private CompletionStage<HttpResponse> fetch(String url) {
-        return http.singleRequest(HttpRequest.create(url));
+        System.out.println("fetch url " + url);
+        return http.singleRequest(HttpRequest.create(url),materializer);
     }
 
     private CompletionStage<HttpResponse> redirect(String url, int count) {
-      return Patterns.ask(storeActor, new GetRandomServerMessage(), TIMEOUT)
-                     .thenCompose(serverURL -> fetch(createRedirectUrl((String) serverURL, url, count )));
+      return PatternsCS.ask(storeActor, new GetRandomServerMessage(), 5000)
+                       .thenCompose(serverURL -> fetch(createRedirectUrl((String) serverURL, url, count )));
     }
 
     private String createRedirectUrl(String serverUrl, String queryUrl, int count) {

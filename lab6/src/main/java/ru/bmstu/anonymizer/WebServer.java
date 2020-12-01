@@ -15,8 +15,8 @@ import akka.stream.javadsl.Flow;
 import java.io.IOException;
 import java.util.concurrent.CompletionStage;
 
-import ru.bmstu.anonymizer.SystemServer;
 import ru.bmstu.anonymizer.Store.StoreActor;
+import ru.bmstu.anonymizer.SystemServer;
 import ru.bmstu.anonymizer.ZookeeperService;
 import ru.bmstu.anonymizer.Messages.GetRandomServerMessage;
 
@@ -30,15 +30,17 @@ public class WebServer {
     private static final String domain = "localhost";
     private static final int port = 8080;
 
-    public static void main( String[] args ) throws IOException {
+    public static void main( String[] args ) throws IOException, KeeperException, InterruptedException {
         System.out.println( "Start create server");
 
         ActorSystem system = ActorSystem.create("routes");
 
-        private Http http = Http.get(system);
+        Http http = Http.get(system);
         final ActorMaterializer materializer = ActorMaterializer.create(system);
 
-        SystemServer server = new SystemServer(system, http);
+        ActorRef actorStore = system.actorOf(Props.create(StoreActor.class));
+
+        SystemServer server = new SystemServer(actorStore, http, materializer);
 
         final Flow<HttpRequest, HttpResponse, NotUsed> routeFlow =
               server.createRoute().flow(system,materializer);
