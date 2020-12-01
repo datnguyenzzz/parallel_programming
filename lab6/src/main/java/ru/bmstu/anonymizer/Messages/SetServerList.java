@@ -1,6 +1,6 @@
 package ru.bmstu.anonymizer.Messages;
 
-public class SetServerMessage {
+public class SetServerList {
     private String [] serverList;
 
     public SetServerMessage(String[] serverList) {

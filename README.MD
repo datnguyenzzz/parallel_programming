@@ -4,4 +4,4 @@ lab4 - completed and ready for preview
 
 lab5 - completed and ready for preview
 
-lab6 - Start writting
+lab6 - completed and ready for preview
