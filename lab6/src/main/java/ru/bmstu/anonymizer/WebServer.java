@@ -4,7 +4,7 @@ package ru.bmstu.anonymizer;
  * Hello world!
  *
  */
-public class App 
+public class WebServer
 {
     public static void main( String[] args )
     {
