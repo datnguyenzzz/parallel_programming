@@ -21,10 +21,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.bmstu.anonymizer.Store.StoreActor;
+import ru.bmstu.anonymizer.Messages.SetServerList;
 
 import akka.stream.javadsl.Flow;
 
-import import org.apache.zookeeper.*;
+import org.apache.zookeeper.*;
 
 
 public class ZookeeperService {
@@ -43,11 +44,11 @@ public class ZookeeperService {
         watchServers();
     }
 
-    private ZooKeeper createZooKeeper() throws IOException {
+    public ZooKeeper createZooKeeper() throws IOException {
         return new ZooKeeper(ZK_BASE_URL, SESSION_TIMEOUT, null);
     }
 
-    private void createServer(String serverUrl) throws KeeperException, InterruptedException {
+    public void createServer(String serverUrl) throws KeeperException, InterruptedException {
         zooKeeper.create(
             NODE,
             serverUrl.getBytes(),
@@ -71,9 +72,9 @@ public class ZookeeperService {
               servers.add(new String(serverUrl));
             }
 
-            storeActor.tell(new SetServerListMessage(servers.toArray(new String[0])), ActorRef.noSender());
+            storeActor.tell(new SetServerList(servers.toArray(new String[0])), ActorRef.noSender());
           } catch (KeeperException | InterruptedException e) {
-              e.printStackTrace)();
+              e.printStackTrace();
           }
     }
 

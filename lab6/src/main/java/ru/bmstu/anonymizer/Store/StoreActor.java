@@ -8,7 +8,7 @@ import ru.bmstu.anonymizer.Messages.SetServerList;
 import java.util.Random;
 
 
-public class storeActor extends AbstractActor {
+public class StoreActor extends AbstractActor {
     private String[] serverList;
 
     @Override
