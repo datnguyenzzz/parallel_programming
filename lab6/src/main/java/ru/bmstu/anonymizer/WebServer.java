@@ -49,7 +49,42 @@ public class WebServer {
     }
 
     private static void initZooKeeper() throws IOException, KeeperException, InterruptedException {
+        ZookeeperService zkService = new ZookeeperService(storeActor);
+        String serverURL = "http://" + domain + ":" port;
+        System.out.println("create zoo server at ",serverURL);
+        zkService.createServer(serverURL);
+    }
 
+    public Route createRoute() {
+        return get(() ->
+            parameter(URL_PARAM, urlParam ->
+                parameter(COUNT_PARAM, countParam -> {
+                    int count = Integer.parseInt(countParam);
+
+                    return count == 0 ?
+                              completeWithFuture(fetch(urlParam)) :
+                              completeWithFuture(redirect(urlParam, count));
+                })
+            )
+        );
+    }
+
+    private static CompletionStage<HttpResponse> fetch(String url) {
+        return http.singleRequest(HttpRequest.create(url));
+    }
+
+    private static CompletionStage<HttpResponse> redirect(String url, int count) {
+      return Patterns.ask(actorStore, new GetRandomServerMessage(), TIMEOUT)
+                     .thenCompose(serverURL -> fetch(createRedirectUrl((String) serverUrl, url, count )));
+    }
+
+    private static String createRedirectUrl(String serverUrl, String queryUrl, int count) {
+        return Uri.create(serverUrl)
+                  .query(Query.create(
+                            Pair.create(URL_PARAM, queryUrl),
+                            Pair.create(COUNT_PARAM, Integer.toString(count - 1))
+                  ))
+                  .toString();
     }
 
     public static void main( String[] args ) {
@@ -62,10 +97,11 @@ public class WebServer {
 
         WebServer server = new WebServer(system);
 
-        final Flow<HttpRequest, HttpResponse, NotUsed> httpFlow = getHttpFlow(materializer);
+        final Flow<HttpRequest, HttpResponse, NotUsed> routeFlow =
+              createRoute().flow(system,materializer);
 
         final CompletionStage<ServerBinding> binding = http.bindAndHandle(
-              httpFlow,
+              routeFlow,
               ConnectHttp.toHost(domain,port),
               materializer
         );
