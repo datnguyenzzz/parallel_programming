@@ -17,6 +17,8 @@ import java.time.Duration;
 import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.ArrayList;
+import java.util.List;
 
 import ru.bmstu.anonymizer.Store.StoreActor;
 
@@ -39,6 +41,40 @@ public class ZookeeperService {
         this.storeActor = storeActor;
         this.zooKeeper = createZooKeeper();
         watchServers();
+    }
+
+    private ZooKeeper createZooKeeper() throws IOException {
+        return new ZooKeeper(ZK_BASE_URL, SESSION_TIMEOUT, null);
+    }
+
+    private void createServer(String serverUrl) throws KeeperException, InterruptedException {
+        zooKeeper.create(
+            NODE,
+            serverUrl.getBytes(),
+            ZooDefs.Ids.OPEN_ACL_UNSAFE,
+            CreateMode.EPHEMERAL_SEQUENTIAL
+        );
+    }
+
+    private void watchServers() {
+        try {
+            List<String> serverNode = zooKeeper.getChildren(ROOT, watchedEvent -> {
+                if (watchedEvent.getType() == Watcher.Event.EventType.NodeChildrenChanged) {
+                    watchServers();
+                }
+            });
+
+            List<String> servers = new ArrayList<>();
+
+            for (String nodeName : serverNode) {
+              byte[] serverUrl = zooKeeper.getData(ROOT + "/" + nodeName, null, null);
+              servers.add(new String(serverUrl));
+            }
+
+            storeActor.tell(new SetServerListMessage(servers.toArray(new String[0])), ActorRef.noSender());
+          } catch (KeeperException | InterruptedException e) {
+              e.printStackTrace)();
+          }
     }
 
 }
