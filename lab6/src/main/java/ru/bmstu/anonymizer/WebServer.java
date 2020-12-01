@@ -19,11 +19,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import akka.stream.javadsl.Flow;
-import akka.stream.javadsl.Keep;
-import akka.stream.javadsl.Sink;
-import akka.stream.javadsl.Source;
 
 import ru.bmstu.anonymizer.Store.StoreActor;
+import ru.bmstu.anonymizer.ZookeeperService;
 
 import import org.apache.zookeeper.*;
 
@@ -74,7 +72,7 @@ public class WebServer {
     }
 
     private static CompletionStage<HttpResponse> redirect(String url, int count) {
-      return Patterns.ask(actorStore, new GetRandomServerMessage(), TIMEOUT)
+      return PatternsCS.ask(actorStore, new GetRandomServerMessage(), TIMEOUT)
                      .thenCompose(serverURL -> fetch(createRedirectUrl((String) serverUrl, url, count )));
     }
 
