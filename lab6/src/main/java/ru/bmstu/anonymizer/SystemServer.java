@@ -33,7 +33,7 @@ public class SystemServer extends AllDirectives {
     private static final String URL_PARAM = "url";
     private static final String COUNT_PARAM = "count";
     private static final String domain = "localhost";
-    private static final int port = 8080;
+    private static final int port = 6969;
 
     public SystemServer(ActorRef storeActor,Http http, ActorMaterializer materializer) throws InterruptedException, IOException, KeeperException {
         this.storeActor = storeActor;

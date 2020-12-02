@@ -23,12 +23,12 @@ import ru.bmstu.anonymizer.Messages.GetRandomServerMessage;
 import org.apache.zookeeper.*;
 
 /**
- * http://localhost:8080/? url=http://rambler.ru&count=20
+ * http://localhost:6969/? url=http://rambler.ru&count=20
  *
  */
 public class WebServer {
     private static final String domain = "localhost";
-    private static final int port = 8080;
+    private static final int port = 6969;
 
     public static void main( String[] args ) throws IOException, KeeperException, InterruptedException {
         System.out.println( "Start create server");
@@ -51,7 +51,7 @@ public class WebServer {
               materializer
         );
 
-        System.out.println("Server is started at http://localhost:8080");
+        System.out.println("Server is started at http://localhost:6969");
 
         System.in.read();
 
