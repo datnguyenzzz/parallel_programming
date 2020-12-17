@@ -69,10 +69,13 @@ public class Proxy {
 
         switch(data[0]) {
             case "PUT": {
-
+                receivePutSignal(data,msg);
             }
             case "GET": {
-                
+                receiveGetSignal(data,msg);
+            }
+            default: {
+                error(frontend,"error: ",msg);
             }
         }
     }
