@@ -70,20 +70,28 @@ public class Proxy {
     private void handleClientMsg(ZMsg msg) {
         String[] data = msg.getLast().toString().split(SPACE);
 
+        //Client request format : PUT/GET <something>
+
         switch(data[0]) {
             case "PUT": {
-                receivePutSignal(data,msg);
+                receivePutClientSignal(data,msg);
             }
             case "GET": {
-                receiveGetSignal(data,msg);
+                receiveGetClientSignal(data,msg);
             }
             default: {
-                error(frontend,"error: ",msg);
+                errorFeedback(frontend,"error: ",msg);
             }
         }
     }
 
     private void handleCacheMsg(ZMsg msg) {
 
+    }
+
+    private void errorFeedback(ZMQ.Socket socket, String error, ZMsg msg) {
+        ZMsg e = new ZMsg();
+        e.add(msg.getFirst() + " " + error);
+        e.send(socket);
     }
 }
