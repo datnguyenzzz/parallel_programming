@@ -85,6 +85,14 @@ public class Proxy {
         }
     }
 
+    private void receiveGetClientSignal(String[] data, ZMsg msg) {
+
+    }
+
+    private void receivePutClientSignal(String[] data, ZMsg msg) {
+        
+    }
+
     private void handleCacheMsg(ZMsg msg) {
 
     }
