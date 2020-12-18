@@ -2,6 +2,9 @@ package ru.bmstu.ProxyApp.Proxy;
 
 import org.zeromq.*;
 
+import ru.bmstu.ProxyApp.Client;
+import ru.bmstu.ProxyApp.Cache;
+
 public class Proxy {
 
     private ZContext conn;
@@ -9,6 +12,8 @@ public class Proxy {
 
     private long time;
     private static final String SPACE = " ";
+    private static final int FRONTEND_SLOT = 0;
+    private static final int BACKEND_SLOT = 1;
 
     public Proxy(ZContext conn) {
         this.conn = conn;
@@ -19,8 +24,8 @@ public class Proxy {
         this.frontend.setHWM(0);
         this.backend.setHWM(0);
 
-        this.frontend.bind("tcp://localhost:2000");
-        this.backend.bind("tcp://localhost:2001");
+        this.frontend.bind(Client.ADDRESS);
+        this.backend.bind(Cache.ADDRESS);
         handle();
     }
 
@@ -33,13 +38,11 @@ public class Proxy {
         time = System.currentTimeMillies();
 
         while (!Thread.currentThread().isInterrupted()) {
-            //0 - frontend
-            //1 - backend
             items.poll(1);
 
             while (!Thread.currentThread().isInterrupted()) {
 
-                if (items.pollin(0)) {
+                if (items.pollin(FRONTEND_SLOT)) {
                     ZMsg msg = ZMsg.recvMsg(frontend);
                     System.out.println("Received msg from frontend");
 
@@ -50,11 +53,11 @@ public class Proxy {
                     }
                 }
 
-                if (items.pollin(1)) {
+                if (items.pollin(BACKEND_SLOT)) {
                     ZMsg msg = Zmsg.recvMsg(backend);
 
                     if (msg) {
-                        handleProxyMsg(msg);
+                        handleCacheMsg(msg);
                     } else {
                         break;
                     }
@@ -80,7 +83,7 @@ public class Proxy {
         }
     }
 
-    private void handleProxyMsg(ZMsg msg) {
+    private void handleCacheMsg(ZMsg msg) {
 
     }
 }
