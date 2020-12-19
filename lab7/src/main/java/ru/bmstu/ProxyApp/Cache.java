@@ -66,7 +66,23 @@ public class Cache {
     }
 
     private void handlerDealer() {
+        ZMsg msg = ZMsg.recvMsg(socket);
+        ZFrame content = msg.getLast();
+        String[] data = content.toString();
 
+        if (data[0].equals("GET")) {
+            int pos = Integer.parseInt(data[1]);
+            msg.pollLast(); //Retrieves and removes
+            msg.add(cache.get(pos));
+            msg.send(socket);
+        } 
+
+        if (data[0].equals("PUT")) {
+            int pos = Integer.parseInt(data[1]);
+            String value = data[2];
+            cache.put(pos,value);
+            msg.send(socket);
+        }
     }
 
     private void connect() {
