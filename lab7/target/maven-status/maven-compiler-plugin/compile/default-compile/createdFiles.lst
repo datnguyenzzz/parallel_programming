@@ -1,0 +1,5 @@
+ru\bmstu\ProxyApp\App.class
+ru\bmstu\ProxyApp\Client.class
+ru\bmstu\ProxyApp\Cache.class
+ru\bmstu\ProxyApp\Proxy.class
+ru\bmstu\ProxyApp\Partitions.class

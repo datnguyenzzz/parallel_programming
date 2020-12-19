@@ -1,11 +1,11 @@
-package ru.bmstu.ProxyApp.Client;
+package ru.bmstu.ProxyApp;
 
 import org.zeromq.*;
 
 import java.util.Scanner;
 
 public class Client {
-    public String ADDRESS = "tcp://localhost:2000";
+    public static String ADDRESS = "tcp://localhost:2000";
 
     private static ZContext conn; 
     private static ZMQ.Socket socket;
@@ -30,7 +30,7 @@ public class Client {
                     zmsgReq.send(socket);
                     zmsgRes = ZMsg.recvMsg(socket);
 
-                    if (zmsgReq) {
+                    if (zmsgReq != null) {
                         System.out.println("RESPONSE FROM PROXY: " + zmsgRes.popString());
                     } else {
                         System.out.println("NO RESPONSE FROM PROXY");

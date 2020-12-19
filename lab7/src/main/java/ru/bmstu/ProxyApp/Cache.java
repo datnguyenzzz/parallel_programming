@@ -1,4 +1,4 @@
-package ru.bmstu.ProxyApp.Cache;
+package ru.bmstu.ProxyApp;
 
 import org.zeromq.*;
 
@@ -14,7 +14,8 @@ public class Cache {
     private HashMap<Integer,String> cache;
     private int startPos,endPos;
 
-    public String ADDRESS = "tcp://localhost:2001";
+    public static String ADDRESS = "tcp://localhost:2001";
+    private static final String SPACE = " ";
     private static final long TIME_EPSILON = 5000;
     private static final int DEALER_SLOT = 0;
 
@@ -24,7 +25,7 @@ public class Cache {
         cache = new HashMap<>();
         Scanner in  = new Scanner(System.in);
         startPos = in.nextInt();
-        endPos = in.NextInt();
+        endPos = in.nextInt();
 
         for (int i=startPos; i<=endPos; i++) {
             cache.put(i, Integer.toString(i));
@@ -48,7 +49,7 @@ public class Cache {
 
     private void handler() {
         long time = System.currentTimeMillis();
-        while (!Thread.currentThread().isInterupted()) {
+        while (!Thread.currentThread().isInterrupted()) {
             data.poll(1);
 
             if (System.currentTimeMillis() - time > TIME_EPSILON) {
@@ -68,7 +69,7 @@ public class Cache {
     private void handlerDealer() {
         ZMsg msg = ZMsg.recvMsg(socket);
         ZFrame content = msg.getLast();
-        String[] data = content.toString();
+        String[] data = content.toString().split(SPACE);
 
         if (data[0].equals("GET")) {
             int pos = Integer.parseInt(data[1]);

@@ -1,4 +1,4 @@
-package ru.bmstu.ProxyApp.Partitions;
+package ru.bmstu.ProxyApp;
 
 public class Partitions {
     private String startPos;

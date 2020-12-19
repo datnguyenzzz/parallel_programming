@@ -1,4 +1,4 @@
-package ru.bmstu.ProxyApp.Proxy; 
+package ru.bmstu.ProxyApp; 
 
 import org.zeromq.*;
 
@@ -45,28 +45,28 @@ public class Proxy {
         time = System.currentTimeMillis();
 
         while (!Thread.currentThread().isInterrupted()) {
-            items.poll(1);
+            pollers.poll(1);
 
-            if ((!processor.isEmpty()) && (System.currentTimeMillies - time > TIME_EPSILON)) {
+            if ((!processor.isEmpty()) && (System.currentTimeMillis() - time > TIME_EPSILON)) {
                 removeDead();
                 time = System.currentTimeMillis();
             }
 
-            if (items.pollin(FRONTEND_SLOT)) {
+            if (pollers.pollin(FRONTEND_SLOT)) {
                 ZMsg msg = ZMsg.recvMsg(frontend);
                 System.out.println("Received msg from frontend");
 
-                if (msg) {
+                if (msg != null) {
                     handleClientMsg(msg);
                 } else {
                     break;
                 }
             }
 
-            if (items.pollin(BACKEND_SLOT)) {
-                ZMsg msg = Zmsg.recvMsg(backend);
+            if (pollers.pollin(BACKEND_SLOT)) {
+                ZMsg msg = ZMsg.recvMsg(backend);
 
-                if (msg) {
+                if (msg != null) {
                     handleCacheMsg(msg);
                 } else {
                     break;
@@ -76,9 +76,7 @@ public class Proxy {
     }
 
     private void removeDead() {
-        processor.entrySet().removeIf(com -> (
-            time-com.getValue().getTime() > TIME_EPSILON * 1.5;
-        ));
+        processor.entrySet().removeIf(com -> ((time-com.getValue().getTime()) > TIME_EPSILON * 1.5));
     }
 
     private void handleClientMsg(ZMsg msg) {
