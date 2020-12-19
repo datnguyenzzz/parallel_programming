@@ -15,6 +15,8 @@ public class Cache {
     private int startPos,endPos;
 
     public String ADDRESS = "tcp://localhost:2001";
+    private static final long TIME_EPSILON = 5000;
+    private static final int DEALER_SLOT = 0;
 
     public Cache(ZContext conn) {
         this.conn = conn;
@@ -42,6 +44,29 @@ public class Cache {
         } catch (Exception e) {
             System.out.println(e.toString());
         }
+    }
+
+    private void handler() {
+        long time = System.currentTimeMillis();
+        while (!Thread.currentThread().isInterupted()) {
+            data.poll(1);
+
+            if (System.currentTimeMillis() - time > TIME_EPSILON) {
+                ZMsg msg = new ZMsg();
+                msg.add("CACHE READY " + startPos + " " + endPos);
+                msg.send(socket);
+                System.out.println("ready message sent");
+                time = System.currentTimeMillis();
+            }
+
+            if (data.pollin(DEALER_SLOT)) {
+                handlerDealer();
+            }
+        }
+    }
+
+    private void handlerDealer() {
+        
     }
 
     private void connect() {
