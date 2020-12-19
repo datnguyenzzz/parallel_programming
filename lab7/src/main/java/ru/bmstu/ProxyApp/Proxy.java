@@ -104,7 +104,7 @@ public class Proxy {
                 ZFrame cache = c.getKey().duplicate();
                 msg.addFirst(cache);
                 msg.send(backend);
-                System.out.println("received get request from client : " + msg);
+                System.out.println("received get request from client");
             }
     }
 
@@ -115,7 +115,7 @@ public class Proxy {
                 ZFrame cache = c.getKey().duplicate();
                 msg.addFirst(cache);
                 msg.send(backend);
-                System.out.println("received put request from client : " + msg);
+                System.out.println("received put request from client");
             }
     }
 

@@ -11,7 +11,7 @@ public class App
 {
     public static void main( String[] args )
     {
-        System.out.println( "Hello World!" );
+        System.out.println( "Proxy server ready ... " );
         
         ZContext conn = new ZContext();
         Proxy server = new Proxy(conn);

@@ -36,6 +36,7 @@ public class Cache {
     }
 
     public static void main(String args[]) {
+        System.out.println("Cache is ready for setup partitions");
         try {
             ZContext conn = new ZContext();
             Cache cache = new Cache(conn);
@@ -56,7 +57,7 @@ public class Cache {
                 ZMsg msg = new ZMsg();
                 msg.add("UPDATE " + startPos + " " + endPos);
                 msg.send(socket);
-                System.out.println("ready message sent");
+                //System.out.println("ready message sent");
                 time = System.currentTimeMillis();
             }
 
