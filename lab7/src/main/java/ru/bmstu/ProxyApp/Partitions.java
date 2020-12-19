@@ -12,6 +12,10 @@ public class Partitions {
         this.time = time;
     }
 
+    public long getTime() {
+        return this.time;
+    }
+
     public boolean belongTo(String pos) {
         return Integer.parseInt(startPos) <= Integer.parseInt(pos) && Integer.parseInt(pos) <= Integer.parseInt(endPos);
     }
