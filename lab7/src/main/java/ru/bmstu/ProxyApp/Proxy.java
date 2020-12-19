@@ -72,8 +72,6 @@ public class Proxy {
                     break;
                 }
             }
-            
-
         }
     }
 
@@ -102,7 +100,13 @@ public class Proxy {
     }
 
     private void receiveGetClientSignal(String[] data, ZMsg msg) {
-
+        for (HashMap.Entry<ZFrame,Partitions> c : processor.entrySet())
+            if (c.getValue().belongTo(data[1])) {
+                //req from client belong to 1 of partitions if cache
+                ZFrame cache = c.getKey().duplicate();
+                msg.addFirst(cache);
+                msg.send(backend);
+            }
     }
 
     private void receivePutClientSignal(String[] data, ZMsg msg) {
