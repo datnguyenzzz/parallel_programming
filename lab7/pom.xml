@@ -81,15 +81,29 @@
           <artifactId>exec-maven-plugin</artifactId>
           <version>1.6.0</version>
           <executions>
+
             <execution>
-              <goals>
-                <goal>java</goal>
-              </goals>
+              <id>default-cli</id>
+              <configuration>
+                <mainClass>ru.bmstu.ProxyApp.App</mainClass>
+              </configuration>
             </execution>
+
+            <execution>
+              <id>second-cli</id>
+              <configuration>
+                <mainClass>ru.bmstu.ProxyApp.Client</mainClass>
+              </configuration>
+            </execution>
+
+            <execution>
+              <id>third-cli</id>
+              <configuration>
+                <mainClass>ru.bmstu.ProxyApp.Cache</mainClass>
+              </configuration>
+            </execution>
+
           </executions>
-          <configuration>
-            <mainClass>ru.bmstu.ProxyApp</mainClass>
-          </configuration>
         </plugin>
 
       </plugins>
