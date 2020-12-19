@@ -53,7 +53,7 @@ public class Cache {
 
             if (System.currentTimeMillis() - time > TIME_EPSILON) {
                 ZMsg msg = new ZMsg();
-                msg.add("CACHE READY " + startPos + " " + endPos);
+                msg.add("RELOAD " + startPos + " " + endPos);
                 msg.send(socket);
                 System.out.println("ready message sent");
                 time = System.currentTimeMillis();
@@ -66,7 +66,7 @@ public class Cache {
     }
 
     private void handlerDealer() {
-        
+
     }
 
     private void connect() {

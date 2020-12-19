@@ -42,14 +42,14 @@ public class Proxy {
         pollers.register(frontend, ZMQ.Poller.POLLIN);
         pollers.register(backend, ZMQ.Poller.POLLIN);
 
-        time = System.currentTimeMillies();
+        time = System.currentTimeMillis();
 
         while (!Thread.currentThread().isInterrupted()) {
             items.poll(1);
 
             if ((!processor.isEmpty()) && (System.currentTimeMillies - time > TIME_EPSILON)) {
                 removeDead();
-                time = System.currentTimeMillies();
+                time = System.currentTimeMillis();
             }
 
             if (items.pollin(FRONTEND_SLOT)) {
@@ -122,7 +122,16 @@ public class Proxy {
     }
 
     private void handleCacheMsg(ZMsg msg) {
+        String[] data = msg.getLast().toString().split(SPACE);
 
+        if (msg.getLast().toString().contains("RELOAD")) {
+            if (!processor.containsKey(msg.getFirst())) {
+                Partitions pat = new Partitions(data[1], data[2], System.currentTimeMillis());
+                processor.put(msg.getFirst().duplicate(),pat);
+            } else {
+                processor.get(msg.getFirst().duplicate()).setTime(System.currentTimeMillis());
+            }
+        }
     }
 
     private void errorFeedback(ZMQ.Socket socket, String error, ZMsg msg) {
