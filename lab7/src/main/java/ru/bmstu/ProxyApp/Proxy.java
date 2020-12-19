@@ -12,8 +12,8 @@ public class Proxy {
 
     private ZContext conn;
     private ZMQ.Socket frontend,backend;
-    private HashMap<ZFrame,Partitions> processor;
-
+    private HashMap<ZFrame,Partitions> processor; //The ZFrame class provides methods to send and receive single message
+                                                  //ZMsg - contains several ZFrames  
     private long time;
     private static final long TIME_EPSILON = 5000;
     private static final String SPACE = " ";
@@ -106,11 +106,19 @@ public class Proxy {
                 ZFrame cache = c.getKey().duplicate();
                 msg.addFirst(cache);
                 msg.send(backend);
+                System.out.println("received get request from client : " + msg);
             }
     }
 
     private void receivePutClientSignal(String[] data, ZMsg msg) {
-        
+        for (HashMap.Entry<ZFrame,Partitions> c : processor.entrySet())
+            if (c.getValue().belongTo(data[1])) {
+                //req from client belong to 1 of partitions if cache
+                ZFrame cache = c.getKey().duplicate();
+                msg.addFirst(cache);
+                msg.send(backend);
+                System.out.println("received put request from client : " + msg);
+            }
     }
 
     private void handleCacheMsg(ZMsg msg) {
