@@ -6,4 +6,4 @@ lab5 - completed and ready for preview
 
 lab6 - completed and ready for preview
 
-lab7 - on working ... 
+lab7 - completed and ready for preview
