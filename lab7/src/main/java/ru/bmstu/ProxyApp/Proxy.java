@@ -124,13 +124,16 @@ public class Proxy {
     private void handleCacheMsg(ZMsg msg) {
         String[] data = msg.getLast().toString().split(SPACE);
 
-        if (msg.getLast().toString().contains("RELOAD")) {
+        if (msg.getLast().toString().contains("UPDATE")) {
             if (!processor.containsKey(msg.getFirst())) {
                 Partitions pat = new Partitions(data[1], data[2], System.currentTimeMillis());
                 processor.put(msg.getFirst().duplicate(),pat);
             } else {
                 processor.get(msg.getFirst().duplicate()).setTime(System.currentTimeMillis());
             }
+        } else {
+            msg.pop();
+            msg.send(frontend);
         }
     }
 
